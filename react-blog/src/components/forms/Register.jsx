@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import Notification from '../layouts/pageComponents/Notification';
 import LinkBack from '../layouts/pageComponents/LinkBack';
-import { validateEmail} from "../utilities";
+import { validateEmail } from '../utilities';
 
 const Register = () => {
     // Un State pour le formulaire.
     const [formData, setFormData] = useState({
-       email: '',
-       password: '',
-       password2: '',
+        email: '',
+        password: '',
+        password2: '',
     });
 
     // Pour notifications
@@ -18,23 +18,30 @@ const Register = () => {
 
     // Récupérer les données des inputs
     const onChangeHandler = e => {
-        setFormData({...formData, [e.target.name]: e.target.value });
+        setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
     // Créer un objet contact et l'enregistrer dans localStorage.
     const onSubmitHandler = e => {
         e.preventDefault();
 
-        const {email, password, password2} = formData;
+        const { email, password, password2 } = formData;
 
         // Validation
         // Vérifier que les mots de passe sont les mêmes
         // Vérifier que l'email est un email
-        if(password2 !== password || !validateEmail(email)) {
+        if (password2 !== password || !validateEmail(email)) {
             return maybeNotify('Formulaire invalide', 'alert-danger');
         }
 
         localStorage.setItem('contact', JSON.stringify(formData));
+
+        fetch('/api/users/register', {
+            method: 'POST',
+            body: JSON.stringify(formdata),
+        }).then(res => {
+            console.log(res);
+        });
 
         e.target.reset();
 
